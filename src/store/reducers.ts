@@ -6,6 +6,7 @@ export interface IReducerState {
   loginType: number;
   respStatus: number;
   isPopup: boolean;
+  lang: number;
 }
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   loginType: 0,
   respStatus: 0,
   isPopup: false,
+  lang: 0,
 };
 
 export enum GlobalAction {
@@ -22,6 +24,7 @@ export enum GlobalAction {
   setLoginType = 'setLoginType',
   setRespStatus = 'setRespStatus',
   setPopup = 'setPopup',
+  setLang = 'setLang',
 }
 
 export function reducer(state = initialState, action: AnyAction): IReducerState {
@@ -51,6 +54,11 @@ export function reducer(state = initialState, action: AnyAction): IReducerState 
       return {
         ...state,
         isPopup: payload,
+      };
+    case GlobalAction.setPopup:
+      return {
+        ...state,
+        lang: payload,
       };
     default:
       return state;
