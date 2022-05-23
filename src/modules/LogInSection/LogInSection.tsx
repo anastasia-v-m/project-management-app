@@ -2,23 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../components/AppContext';
 import siteContent from '../../containers/content';
-import { LOGIN_URL, WELCOM_PAGE_URL } from '../../containers/utlsList';
+import { LOGIN_URL, PROJECTS_URL, WELCOM_PAGE_URL } from '../../containers/utlsList';
 import { GlobalAction } from '../../store/reducers';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { tokenIsAvaliable } from '../commonFunctions';
+import { getToken } from '../commonFunctions';
 import './logInSection.scss';
 
 export default function WelcomePage(): JSX.Element {
-  const [isToken, setIsToken] = useState(tokenIsAvaliable());
+  const [isToken, setIsToken] = useState(getToken() !== '');
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsToken(tokenIsAvaliable());
+      setIsToken(getToken() !== '');
     }, 1000);
+    if (getToken() === '') {
+      dispatch({ type: GlobalAction.setToken, payload: '' });
+    }
     return () => clearInterval(interval);
   }, []);
-
-  const dispatch = useAppDispatch();
 
   const setLoginType = (loginType: number) => {
     dispatch({ type: GlobalAction.setLoginType, payload: loginType });
@@ -49,7 +51,7 @@ export default function WelcomePage(): JSX.Element {
             >
               {siteContent[context.locale].signUpBtn}
             </Link>
-            <Link className={`btn elem-${isToken ? 'visible' : 'hidden'}`} to={WELCOM_PAGE_URL}>
+            <Link className={`btn elem-${isToken ? 'visible' : 'hidden'}`} to={PROJECTS_URL}>
               {siteContent[context.locale].btnToMainPage}
             </Link>
           </div>

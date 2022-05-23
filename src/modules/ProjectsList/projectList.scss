@@ -1,0 +1,45 @@
+@import "../../containers/WelcomePage/welcomePage.scss";
+
+.project-card {
+  width: 270px;
+  // height: 150px;
+  margin: 5px;
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border: 2px solid $dark-bkg;
+  background-color: $basic-color;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+
+  &__item {
+    text-decoration: none;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    width: 250px;
+    color: $basic-bkg;
+    font-size: 26px;
+    text-decoration: none; 
+    overflow: hidden;
+  }
+
+  &__description {
+    width: 250px;
+    color: $basic-bkg;
+    font-size: 20px;
+    text-decoration: none;
+    // white-space: nowrap; 
+    overflow: hidden;
+  }
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}

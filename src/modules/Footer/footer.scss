@@ -1,10 +1,13 @@
 @import "../../containers/WelcomePage/welcomePage.scss";
 
 .footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
-
   height: 100px;
+  width: 100vw;
   background-color: $basic-bkg;
   color: $basic-color;
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;

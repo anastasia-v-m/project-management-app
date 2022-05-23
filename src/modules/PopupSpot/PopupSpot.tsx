@@ -1,10 +1,14 @@
 import React, { SyntheticEvent } from 'react';
+import { AppContext } from '../../components/AppContext';
+import siteContent from '../../containers/content';
 import { GlobalAction } from '../../store/reducers';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import statusDescription, { COMMON_ERROE } from '../statusDescription';
+import NewBoard from './components/NewBoard';
+import QueryError from './components/QueryError';
+
 import './popupSpot.scss';
 
-export default function PopupSpot(): JSX.Element {
+export default function PopupSpot(props: { type: string }): JSX.Element {
   const { respStatus, isPopup } = useAppSelector((state) => state.reducer);
   const dispatch = useAppDispatch();
 
@@ -12,21 +16,14 @@ export default function PopupSpot(): JSX.Element {
     dispatch({ type: GlobalAction.setPopup, payload: false });
   };
 
-  const getRespMessage = (): string => {
-    const result = statusDescription.find((item) => item.status === respStatus);
-    return result?.message || COMMON_ERROE;
-  };
-
-  return (
-    <div className={isPopup ? 'popup-wrapper active' : 'popup-wrapper'} onClick={offPopup}>
-      <div
-        className={isPopup ? 'popup-msg active' : 'popup-msg'}
-        onClick={(e: SyntheticEvent) => {
-          e.stopPropagation();
-        }}
-      >
-        {getRespMessage()}
-      </div>
-    </div>
-  );
+  const { type } = props;
+  let variableFragment: JSX.Element;
+  if (type === 'query error') {
+    variableFragment = <QueryError />;
+  } else if (type === 'board creating') {
+    variableFragment = <NewBoard popupVisibility={true} />;
+  } else {
+    variableFragment = <div />;
+  }
+  return variableFragment;
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { STUB_URL } from '../utlsList';
+import { PROJECTS_URL, STUB_URL } from '../utlsList';
 import PopupSpot from '../../modules/PopupSpot';
 import { GlobalAction } from '../../store/reducers';
 import { useAppDispatch, useAppSelector } from '../../store/store';
@@ -12,7 +12,7 @@ import siteContent from '../content';
 const LOGIN_ACCEPT = /^[a-z0-9_]+$/i;
 const USERNAME_ACCEPT = /^[a-z0-9_ ]+$/i;
 const PASSWORD_ACCEPT = /^[a-z0-9!@#$%^&*()_+-=/.,]+$/i;
-const TOKEN_AGE = 20;
+const TOKEN_AGE = 600;
 const BASE_URL = 'https://stark-shore-23540.herokuapp.com';
 
 export interface ILogInData {
@@ -48,6 +48,9 @@ const instance = axios.create({
 const logIn = (data: ILogInData): Promise<any> => instance.post('/signin', data);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SignUp = (data: ISignUpData): Promise<any> => instance.post('/signup', data);
+const Authorize = (tokenStr: string) =>
+  (axios.defaults.headers.common['Authorization'] = `Bearer ${tokenStr}`);
+//axios.get(BASE_URL, { headers: {"Authorization" : `Bearer ${tokenStr}`} });
 
 const isCorrectField = (inputVal: string, accept: RegExp): boolean => {
   return !(inputVal.trim() === '' || !accept.test(inputVal));
@@ -101,10 +104,14 @@ export default function LogInPage(): JSX.Element {
         dispatch({ type: GlobalAction.setRespStatus, payload: status });
         if (status === 201) {
           fixToken(data.token);
-          navigator(STUB_URL);
+          console.log(data.token);
+          dispatch({ type: GlobalAction.setToken, payload: data.token });
+          await Authorize(data.token);
+          navigator(PROJECTS_URL);
         }
       } catch (err) {
         dispatch({ type: GlobalAction.setPopup, payload: true });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
       }
     };
@@ -116,11 +123,12 @@ export default function LogInPage(): JSX.Element {
           loginFunction();
         } catch (err) {
           dispatch({ type: GlobalAction.setPopup, payload: true });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
         }
       } else if (loginType === 1) {
         const requestData = {
-          name: refUser.current?.value as string,
+          name: (refUser.current?.value as string).trim(),
           login: refLogin.current?.value as string,
           password: refPass.current?.value as string,
         };
@@ -132,6 +140,7 @@ export default function LogInPage(): JSX.Element {
           }
         } catch (err) {
           dispatch({ type: GlobalAction.setPopup, payload: true });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
         }
       }
@@ -142,7 +151,7 @@ export default function LogInPage(): JSX.Element {
     <AppContext.Consumer>
       {(context): JSX.Element => (
         <>
-          <PopupSpot />
+          <PopupSpot type="query error" />
           <div className="input-wrapper">
             <form onSubmit={logInSubmitHandler}>
               <label

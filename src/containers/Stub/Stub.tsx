@@ -1,14 +1,18 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { tokenIsAvaliable } from '../../modules/commonFunctions';
+import { getToken } from '../../modules/commonFunctions';
+import { GlobalAction } from '../../store/reducers';
+import { useAppDispatch } from '../../store/store';
 import { WELCOM_PAGE_URL } from '../utlsList';
 
 export default function Stub(): JSX.Element {
   const navigator = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!tokenIsAvaliable()) {
+      if (getToken() === '') {
+        dispatch({ type: GlobalAction.setToken, payload: '' });
         navigator(WELCOM_PAGE_URL);
       }
     }, 1000);

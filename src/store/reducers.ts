@@ -2,28 +2,34 @@ import { AnyAction } from 'redux';
 
 export interface IReducerState {
   headerBottom: number;
-  isToken: boolean;
+  token: string;
   loginType: number;
   respStatus: number;
   isPopup: boolean;
+  isPopupNewBoard: boolean;
+  isPopupConfirm: boolean;
   lang: number;
 }
 
 const initialState = {
   headerBottom: 156, //40px высота кнопки + 8*2 марджины кнопки + 100px header
-  isToken: false,
+  token: '',
   loginType: 0,
   respStatus: 0,
   isPopup: false,
+  isPopupNewBoard: false,
+  isPopupConfirm: false,
   lang: 0,
 };
 
 export enum GlobalAction {
   setHeaderBottom = 'setHeaderBottom',
-  setIsToken = 'setIsToken',
+  setToken = 'setToken',
   setLoginType = 'setLoginType',
   setRespStatus = 'setRespStatus',
   setPopup = 'setPopup',
+  setPopupNewBoard = 'setPopupNewBoard',
+  setIsPopupConfirm = 'setIsPopupConfirm',
   setLang = 'setLang',
 }
 
@@ -35,10 +41,10 @@ export function reducer(state = initialState, action: AnyAction): IReducerState 
         ...state,
         headerBottom: payload,
       };
-    case GlobalAction.setIsToken:
+    case GlobalAction.setToken:
       return {
         ...state,
-        isToken: payload,
+        token: payload,
       };
     case GlobalAction.setLoginType:
       return {
@@ -55,10 +61,15 @@ export function reducer(state = initialState, action: AnyAction): IReducerState 
         ...state,
         isPopup: payload,
       };
-    case GlobalAction.setPopup:
+    case GlobalAction.setPopupNewBoard:
       return {
         ...state,
-        lang: payload,
+        isPopupNewBoard: payload,
+      };
+    case GlobalAction.setIsPopupConfirm:
+      return {
+        ...state,
+        isPopupConfirm: payload,
       };
     default:
       return state;

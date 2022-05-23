@@ -3,6 +3,10 @@ $basic-bkg: #2f3b22;
 $dark-bkg: #0f1b02;
 $light-bkg: #6f7b62;
 
+main {
+  margin-bottom: 100px;
+}
+
 .welcome {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-size: 36px;
@@ -27,6 +31,21 @@ $light-bkg: #6f7b62;
   border: 1px solid $dark-bkg;
   text-decoration: none;
   color: $basic-color;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+.small-btn {
+  display: flex;
+  height: 20px;
+  padding: 3px;
+  margin: 3px;
+  align-items: center;
+  justify-content: space-around;
+  box-sizing: border-box;
+  border: none;
+  text-decoration: underline;
+  color: $dark-bkg;
+  background-color: inherit;
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
