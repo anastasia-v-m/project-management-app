@@ -1,0 +1,87 @@
+$basic-color: #f6f6f6;
+$basic-bkg: #2f3b22;
+$dark-bkg: #0f1b02;
+$light-bkg: #6f7b62;
+
+main {
+  margin-bottom: 100px;
+}
+
+.welcome {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 36px;
+
+  &__team,
+  &__project,
+  &__course {
+    padding: 20px;
+  }
+}
+
+.btn {
+  display: flex;
+  width: 100px;
+  height: 40px;
+  padding: 3px;
+  margin: 8px;
+  align-items: center;
+  justify-content: space-around;
+  box-sizing: border-box;
+  background-color: $light-bkg;
+  border: 1px solid $dark-bkg;
+  text-decoration: none;
+  color: $basic-color;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+.small-btn {
+  display: flex;
+  height: 20px;
+  padding: 3px;
+  margin: 3px;
+  align-items: center;
+  justify-content: space-around;
+  box-sizing: border-box;
+  border: none;
+  text-decoration: underline;
+  color: $dark-bkg;
+  background-color: inherit;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+h3 {
+  margin-bottom: 15px;
+}
+
+.elem-hidden {
+  display: none;
+}
+
+.elem-visible {
+  display: flex;
+}
+
+.loading {
+  width: 75px;
+  height: 0;
+  margin: auto;
+}
+
+.active-loading {
+  height: 75px;
+}
+
+.spinning {
+  visibility: hidden;
+  stroke-width: 8;
+  stroke: $basic-bkg;
+  stroke-dasharray: 50.26548245743669 50.26548245743669;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.active-spinning {
+  position: relative;
+  visibility: visible;
+  z-index: 5;
+}
