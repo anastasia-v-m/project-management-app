@@ -19,6 +19,7 @@ import ProjectsPage from './containers/ProjectsPage';
 import './reset.scss';
 import ColumnsPage from './containers/ColumnsPage';
 import UserPage from './containers/UserPage/UserPage';
+import Page404 from './containers/Page404';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
                 }
               />
               <Route path={USERS_URL} element={<UserPage />} />
+              <Route path="*" element={<Page404 />} />
             </Routes>
           </BrowserRouter>
         </React.StrictMode>

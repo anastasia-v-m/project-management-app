@@ -51,6 +51,18 @@
     color: $dark-bkg;
   }
 
+  &__item-header-input {
+    padding: 6px 3px 3px 3px;
+    margin: 0 3px 3px 3px;
+    box-sizing: border-box;
+    font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+    size: 1.8em;
+    font-weight: 700;
+    color: $dark-bkg;
+    border: none;
+    background-color: #f6f6f6;
+  }
+
   &__header,
   &__footer {
     // position: fixed;

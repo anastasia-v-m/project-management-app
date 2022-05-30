@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../components/AppContext';
 import instance from '../../components/beNavigator';
@@ -180,6 +180,7 @@ export default function Columns(): JSX.Element {
   };
 
   const columnDeleteHandler = (columnId: string) => {
+    setPopType('query error');
     setDeletedColumnId(columnId);
     dispatch({ type: GlobalAction.setIsPopupConfirm, payload: true });
   };
@@ -196,57 +197,59 @@ export default function Columns(): JSX.Element {
             boardId={boardId}
             columnId={deletedColumnId}
           />
-          <main className="columns">
-            <menu className="columns__menu">
-              <button className="btn" onClick={() => columnCreationHandler()}>
-                {siteContent[context.locale].btnCreateColumn}
-              </button>
-              <p className={`loading ${isLoaded ? 'elem-hidden' : ''}`}>
-                {siteContent[context.locale].loading}
-              </p>
-            </menu>
-            <div className="columns__scroll-wrapper">
-              <div className="columns__container">
-                {columnsArray.map((item: IColumn, index: number): JSX.Element => {
-                  return (
-                    <div className="columns__item" key={index}>
-                      <div className="columns__item-content">
-                        <div className="columns__header">
-                          <h5 className="columns__item-header">{item.title}</h5>
-                          <button
-                            className="small-btn"
-                            onClick={() => taskCreationHandler(item.id)}
-                          >
-                            {siteContent[context.locale].btnCreateTask}
-                          </button>
-                        </div>
-                        <div className="task-container">
-                          {(tasksArray as Array<ITasks>)
-                            .find((tasksItem: ITasks) => tasksItem.columnId === item.id)
-                            ?.content.map(
-                              (taskItem: IOneTask, taskIndex: number): JSX.Element => (
-                                <div key={taskIndex} className="task-item">
-                                  <div className="task-item__title">{taskItem.title}</div>
-                                  <div className="task-item__descr">{taskItem.description}</div>
-                                </div>
-                              )
-                            )}
-                        </div>
-                        <div className="columns__footer">
-                          <button
-                            className="small-btn"
-                            onClick={() => columnDeleteHandler(item.id)}
-                          >
-                            {siteContent[context.locale].btnDeleteColumn}
-                          </button>
+          <Suspense fallback={<LogInSection />}>
+            <main className="columns">
+              <menu className="columns__menu">
+                <button className="btn" onClick={() => columnCreationHandler()}>
+                  {siteContent[context.locale].btnCreateColumn}
+                </button>
+                <p className={`loading ${isLoaded ? 'elem-hidden' : ''}`}>
+                  {siteContent[context.locale].loading}
+                </p>
+              </menu>
+              <div className="columns__scroll-wrapper">
+                <div className="columns__container">
+                  {columnsArray.map((item: IColumn, index: number): JSX.Element => {
+                    return (
+                      <div className="columns__item" key={index}>
+                        <div className="columns__item-content">
+                          <div className="columns__header">
+                            <h5 className="columns__item-header">{item.title}</h5>
+                            <button
+                              className="small-btn"
+                              onClick={() => taskCreationHandler(item.id)}
+                            >
+                              {siteContent[context.locale].btnCreateTask}
+                            </button>
+                          </div>
+                          <div className="task-container">
+                            {(tasksArray as Array<ITasks>)
+                              .find((tasksItem: ITasks) => tasksItem.columnId === item.id)
+                              ?.content.map(
+                                (taskItem: IOneTask, taskIndex: number): JSX.Element => (
+                                  <div key={taskIndex} className="task-item">
+                                    <div className="task-item__title">{taskItem.title}</div>
+                                    <div className="task-item__descr">{taskItem.description}</div>
+                                  </div>
+                                )
+                              )}
+                          </div>
+                          <div className="columns__footer">
+                            <button
+                              className="small-btn"
+                              onClick={() => columnDeleteHandler(item.id)}
+                            >
+                              {siteContent[context.locale].btnDeleteColumn}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
+          </Suspense>
           <Footer />
         </>
       )}

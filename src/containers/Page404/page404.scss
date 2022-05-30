@@ -1,0 +1,12 @@
+@import "../WelcomePage/welcomePage.scss";
+
+.msg-404 {
+  height: calc(100vh - 100px -100px - 70px);
+  margin-top: 10vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 48px;
+  color: $basic-bkg;
+}
