@@ -1,0 +1,11 @@
+@import "../../containers/WelcomePage/welcomePage.scss";
+@import "../PopupSpot/popupSpot.scss";
+
+.comfirmation-wrapper {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: red;
+  font-size: 32px;
+}

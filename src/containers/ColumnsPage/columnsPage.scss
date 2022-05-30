@@ -1,0 +1,113 @@
+@import "../WelcomePage/welcomePage.scss";
+
+.columns {  
+  position: relative;
+  // background-color: #f6f6f6;
+
+  &__scroll-wrapper {
+    position: relative;
+    height: calc(100vh - 100px - 100px - 56px - 62px - 17px);
+    overflow-x: auto;
+    overflow-y:hidden;
+  }
+
+  &__menu {
+    display: flex;
+  }
+
+  &__item {
+    display: flex;
+    flex: 0 0 290px;
+    height: calc(100vh - 100px - 100px - 56px - 62px - 20px - 17px);
+    // background-color: #f6f6f6;
+    // overflow-y: hidden;
+    // overflow-x: hidden;
+  }
+
+  &__item-content {
+    // max-height: 65vh;
+    width: 280px;
+    margin: 0px 5px 20px 5px;
+    box-sizing: border-box;
+    border: 1px solid $dark-bkg;
+    background-color: #f6f6f6;
+    overflow-y: auto;
+    // overflow-x: hidden;
+  }
+
+  &__container {
+    height: calc(100vh - 100px - 100px - 56px - 62px);
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  &__item-header {
+    padding: 6px 3px 3px 3px;
+    margin: 0 3px 3px 3px;
+    box-sizing: border-box;
+    font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+    size: 1.8em;
+    font-weight: 700;
+    color: $dark-bkg;
+  }
+
+  &__item-header-input {
+    padding: 6px 3px 3px 3px;
+    margin: 0 3px 3px 3px;
+    box-sizing: border-box;
+    font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+    size: 1.8em;
+    font-weight: 700;
+    color: $dark-bkg;
+    border: none;
+    background-color: #f6f6f6;
+  }
+
+  &__header,
+  &__footer {
+    // position: fixed;
+    position: absolute;
+    display: block;
+    width: 279px;
+    margin-top: -1px;
+    box-sizing: border-box;
+    z-index: 3;
+    background-color: #f6f6f6;
+    border: 1px solid #f6f6f6;
+    border-right: 1px solid $dark-bkg;
+  }
+
+  &__header {
+    border-top: 1px solid $dark-bkg;
+  }
+
+  &__footer {
+    bottom: 22px;
+    border-bottom : 1px solid $dark-bkg;
+  }
+}
+
+.task-item {
+  padding: 8px;
+  margin: 10px 8px;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  background-color: #fff;
+  z-index: 0;
+
+  &__title {
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+}
+
+.task-container {
+  position: relative;
+  margin-bottom: calc(55px + 25px);
+  top: 55px;
+  z-index: 0;
+}
+
+.fixed-header {
+  position: fixed !important;
+  top: 56px;
+}
