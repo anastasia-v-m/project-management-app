@@ -44,6 +44,7 @@ const siteContent = [
     msgColumnDelete: 'The column will be deleted. Continue?',
     msgDone: 'Is done',
     loading: 'Loading...',
+    pageNotFound: 'Page not found',
   },
   {
     logInBtn: 'войти',
@@ -88,6 +89,7 @@ const siteContent = [
     msgColumnDelete: 'Эта колонка будет удалена. Продолжить?',
     msgDone: 'Готово',
     loading: 'Загрузка...',
+    pageNotFound: 'Страница не найдена',
   },
 ];
 

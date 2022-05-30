@@ -6,7 +6,6 @@ import siteContent from '../../containers/content';
 import { GlobalAction } from '../../store/reducers';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { getToken } from '../commonFunctions';
-import PopupSpot from '../PopupSpot';
 import './confirmation.scss';
 
 export interface IConfirmation {

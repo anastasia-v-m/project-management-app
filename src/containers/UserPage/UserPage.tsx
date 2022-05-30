@@ -159,6 +159,13 @@ export default function UserPage(): JSX.Element {
             payload: (response as IResponseUserUpdate).status,
           });
           dispatch({ type: GlobalAction.setPopup, payload: true });
+          setisConfirm(false);
+          if (refPass.current) {
+            refPass.current.value = '';
+          }
+          if (refPass2.current) {
+            refPass2.current.value = '';
+          }
         }
       }
       setIsLoaded(true);
