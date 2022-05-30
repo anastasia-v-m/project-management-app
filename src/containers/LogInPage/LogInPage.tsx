@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { PROJECTS_URL, STUB_URL } from '../utlsList';
+import { PROJECTS_URL } from '../utlsList';
 import PopupSpot from '../../modules/PopupSpot';
 import { GlobalAction } from '../../store/reducers';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import './loginPage.scss';
 import { AppContext } from '../../components/AppContext';
 import siteContent from '../content';
+import Indicator from '../../components/Indicator';
+import { getToken } from '../../modules/commonFunctions';
 
 const LOGIN_ACCEPT = /^[a-z0-9_]+$/i;
 const USERNAME_ACCEPT = /^[a-z0-9_ ]+$/i;
 const PASSWORD_ACCEPT = /^[a-z0-9!@#$%^&*()_+-=/.,]+$/i;
-const TOKEN_AGE = 600;
+const TOKEN_AGE = 3600;
 const BASE_URL = 'https://stark-shore-23540.herokuapp.com';
 
 export interface ILogInData {
@@ -35,6 +37,13 @@ export interface IResponse2 {
   name: string;
   login: string;
 }
+export interface IResponseAx {
+  config: never;
+  data: IResponse;
+  headers: never;
+  status: number;
+  statusText: string;
+}
 
 const refUser: React.RefObject<HTMLInputElement> = React.createRef();
 const refLogin: React.RefObject<HTMLInputElement> = React.createRef();
@@ -44,13 +53,10 @@ const instance = axios.create({
   baseURL: BASE_URL,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const logIn = (data: ILogInData): Promise<any> => instance.post('/signin', data);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SignUp = (data: ISignUpData): Promise<any> => instance.post('/signup', data);
+const logIn = (data: ILogInData): Promise<IResponseAx> => instance.post('/signin', data);
+const SignUp = (data: ISignUpData): Promise<AxiosResponse> => instance.post('/signup', data);
 const Authorize = (tokenStr: string) =>
   (axios.defaults.headers.common['Authorization'] = `Bearer ${tokenStr}`);
-//axios.get(BASE_URL, { headers: {"Authorization" : `Bearer ${tokenStr}`} });
 
 const isCorrectField = (inputVal: string, accept: RegExp): boolean => {
   return !(inputVal.trim() === '' || !accept.test(inputVal));
@@ -63,11 +69,28 @@ const fixToken = (token: string) => {
 export default function LogInPage(): JSX.Element {
   const dispatch = useAppDispatch();
 
+  const [isLoaded, setIsLoaded] = useState(true);
+
   const [loginIsValid, setLoginIsValid] = useState(true);
   const [passwordIsValid, setPasswordIsValid] = useState(true);
   const [usernameIsValid, setUsernameIsValid] = useState(true);
   const navigator = useNavigate();
   let allFieldsValidated = true;
+
+  const [isToken, setIsToken] = useState(getToken() !== '');
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsToken(getToken() !== '');
+    }, 1000);
+    if (getToken() === '') {
+      dispatch({ type: GlobalAction.setToken, payload: '' });
+    } else if (!isToken) {
+      dispatch({ type: GlobalAction.setToken, payload: '' });
+    } else {
+      navigator(PROJECTS_URL);
+    }
+    return () => clearInterval(interval);
+  }, []);
 
   const { loginType } = useAppSelector((state) => state.reducer);
 
@@ -99,49 +122,51 @@ export default function LogInPage(): JSX.Element {
         login: refLogin.current?.value as string,
         password: refPass.current?.value as string,
       };
-      try {
-        const { data, status } = await logIn(requestData).then((response) => response);
+      const response = await logIn(requestData)
+        .then((response) => {
+          return response;
+        })
+        .catch((err: AxiosError) => {
+          dispatch({ type: GlobalAction.setRespStatus, payload: err.response?.status });
+          dispatch({ type: GlobalAction.setPopup, payload: true });
+          setIsLoaded(true);
+        });
+      if (response) {
         dispatch({ type: GlobalAction.setRespStatus, payload: status });
-        if (status === 201) {
-          fixToken(data.token);
-          console.log(data.token);
-          dispatch({ type: GlobalAction.setToken, payload: data.token });
-          await Authorize(data.token);
+        if ((response as IResponseAx).status === 201) {
+          fixToken((response as IResponseAx).data.token);
+          dispatch({ type: GlobalAction.setToken, payload: (response as IResponseAx).data.token });
+          dispatch({ type: GlobalAction.setPassword, payload: refPass.current?.value as string });
+          await Authorize((response as IResponseAx).data.token);
           navigator(PROJECTS_URL);
         }
-      } catch (err) {
-        dispatch({ type: GlobalAction.setPopup, payload: true });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
       }
+      setIsLoaded(true);
     };
 
     setAllFieldsValidation();
     if (allFieldsValidated) {
+      setIsLoaded(false);
       if (loginType === 0) {
-        try {
-          loginFunction();
-        } catch (err) {
-          dispatch({ type: GlobalAction.setPopup, payload: true });
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
-        }
+        loginFunction();
       } else if (loginType === 1) {
         const requestData = {
           name: (refUser.current?.value as string).trim(),
           login: refLogin.current?.value as string,
           password: refPass.current?.value as string,
         };
-        try {
-          const { status } = await SignUp(requestData).then((response) => response);
+        const status = await SignUp(requestData)
+          .then((response) => response.status)
+          .catch((err: AxiosError) => {
+            dispatch({ type: GlobalAction.setRespStatus, payload: err.response?.status });
+            dispatch({ type: GlobalAction.setPopup, payload: true });
+            setIsLoaded(true);
+          });
+        if (status) {
           dispatch({ type: GlobalAction.setRespStatus, payload: status });
           if (status === 201) {
             loginFunction();
           }
-        } catch (err) {
-          dispatch({ type: GlobalAction.setPopup, payload: true });
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
         }
       }
     }
@@ -166,14 +191,26 @@ export default function LogInPage(): JSX.Element {
               </label>
               <label className="input-data__title" htmlFor="login">
                 {siteContent[context.locale].loginInputTitle}
-                <input type="text" name="login" className="input-data__box" ref={refLogin} />
+                <input
+                  autoComplete="on"
+                  type="text"
+                  name="login"
+                  className="input-data__box"
+                  ref={refLogin}
+                />
                 <p className="input-data__error-message">
                   {!loginIsValid ? siteContent[context.locale].incorrectLoginMsg : ''}
                 </p>
               </label>
               <label className="input-data__title" htmlFor="password">
                 {siteContent[context.locale].passwordInputTitle}
-                <input type="text" name="password" className="input-data__box" ref={refPass} />
+                <input
+                  autoComplete="new-password"
+                  type="password"
+                  name="password"
+                  className="input-data__box"
+                  ref={refPass}
+                />
                 <p className="input-data__error-message">
                   {!passwordIsValid ? siteContent[context.locale].incorrectPasswordMsg : ''}
                 </p>
@@ -183,6 +220,9 @@ export default function LogInPage(): JSX.Element {
               </button>
             </form>
           </div>
+          <p className={`loading ${isLoaded ? '' : 'active-loading'}`}>
+            <Indicator prefix={isLoaded ? '' : 'active-spinning'} />
+          </p>
         </>
       )}
     </AppContext.Consumer>

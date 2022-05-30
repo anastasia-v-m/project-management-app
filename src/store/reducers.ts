@@ -8,7 +8,15 @@ export interface IReducerState {
   isPopup: boolean;
   isPopupNewBoard: boolean;
   isPopupConfirm: boolean;
+  isPopupTaskCreation: boolean;
   lang: number;
+  boardId: string;
+  columnId: string;
+  orderForCreation: number;
+  currentNewObject: string;
+  isReload: boolean;
+  password: string;
+  popupType: string;
 }
 
 const initialState = {
@@ -19,7 +27,15 @@ const initialState = {
   isPopup: false,
   isPopupNewBoard: false,
   isPopupConfirm: false,
+  isPopupTaskCreation: false,
   lang: 0,
+  boardId: '',
+  columnId: '',
+  orderForCreation: 0,
+  currentNewObject: '',
+  isReload: false,
+  password: '',
+  popupType: '',
 };
 
 export enum GlobalAction {
@@ -30,7 +46,16 @@ export enum GlobalAction {
   setPopup = 'setPopup',
   setPopupNewBoard = 'setPopupNewBoard',
   setIsPopupConfirm = 'setIsPopupConfirm',
+  setIsPopupTaskCreation = 'setIsPopupTaskCreation',
   setLang = 'setLang',
+  setBoardId = 'setBoardId',
+  setColumnId = 'setColumnId',
+  setUserId = 'setUserId',
+  setOrderForCreation = 'setOrderForCreation',
+  setCurrentNewObject = 'setCurrentNewObject',
+  setIsReload = 'setIsReload',
+  setPassword = 'setPassword',
+  setPopupType = 'setPopupType',
 }
 
 export function reducer(state = initialState, action: AnyAction): IReducerState {
@@ -70,6 +95,46 @@ export function reducer(state = initialState, action: AnyAction): IReducerState 
       return {
         ...state,
         isPopupConfirm: payload,
+      };
+    case GlobalAction.setIsPopupTaskCreation:
+      return {
+        ...state,
+        isPopupTaskCreation: payload,
+      };
+    case GlobalAction.setBoardId:
+      return {
+        ...state,
+        boardId: payload,
+      };
+    case GlobalAction.setColumnId:
+      return {
+        ...state,
+        columnId: payload,
+      };
+    case GlobalAction.setOrderForCreation:
+      return {
+        ...state,
+        orderForCreation: payload,
+      };
+    case GlobalAction.setCurrentNewObject:
+      return {
+        ...state,
+        currentNewObject: payload,
+      };
+    case GlobalAction.setIsReload:
+      return {
+        ...state,
+        isReload: payload,
+      };
+    case GlobalAction.setPassword:
+      return {
+        ...state,
+        password: payload,
+      };
+    case GlobalAction.setPopupType:
+      return {
+        ...state,
+        popupType: payload,
       };
     default:
       return state;

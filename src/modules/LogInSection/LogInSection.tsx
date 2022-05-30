@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../../components/AppContext';
 import siteContent from '../../containers/content';
 import { LOGIN_URL, PROJECTS_URL, WELCOM_PAGE_URL } from '../../containers/utlsList';
 import { GlobalAction } from '../../store/reducers';
-import { useAppDispatch, useAppSelector } from '../../store/store';
+import { useAppDispatch } from '../../store/store';
 import { getToken } from '../commonFunctions';
 import './logInSection.scss';
 
@@ -53,6 +53,9 @@ export default function WelcomePage(): JSX.Element {
             </Link>
             <Link className={`btn elem-${isToken ? 'visible' : 'hidden'}`} to={PROJECTS_URL}>
               {siteContent[context.locale].btnToMainPage}
+            </Link>
+            <Link className="btn" to={WELCOM_PAGE_URL}>
+              {siteContent[context.locale].btnToHome}
             </Link>
           </div>
         </section>

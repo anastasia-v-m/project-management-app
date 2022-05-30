@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../components/AppContext';
 import siteContent from '../../containers/content';
-import { STUB_URL } from '../../containers/utlsList';
+import { USERS_URL, WELCOM_PAGE_URL } from '../../containers/utlsList';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { getToken } from '../commonFunctions';
 import AddBoardSVG from '../../assets/AddBoardSVG';
@@ -14,9 +14,15 @@ import { GlobalAction } from '../../store/reducers';
 
 const HEADER_BOTTOM = 156;
 
-export default function Header(): JSX.Element {
+export interface IHeaderClass {
+  class?: string;
+}
+
+export default function Header(props?: IHeaderClass): JSX.Element {
   const { headerBottom } = useAppSelector((state) => state.reducer);
   const dispatch = useAppDispatch();
+
+  const navigator = useNavigate();
 
   const fixYPosition = () => {
     dispatch({ type: GlobalAction.setHeaderBottom, payload: window.scrollY });
@@ -40,8 +46,9 @@ export default function Header(): JSX.Element {
   const removeToken = () => {
     document.cookie = 'token=';
   };
-  const logOutHandler = (e: React.SyntheticEvent) => {
+  const logOutHandler = () => {
     removeToken();
+    navigator(WELCOM_PAGE_URL);
   };
 
   const newBoardCreatingHandler = () => {
@@ -53,11 +60,15 @@ export default function Header(): JSX.Element {
   return (
     <AppContext.Consumer>
       {(context): JSX.Element => (
-        <header className={`header ${headerBottom > HEADER_BOTTOM ? 'animated-header' : ''}`}>
+        <header
+          className={`header ${headerBottom > HEADER_BOTTOM ? 'animated-header' : ''} ${
+            props?.class !== undefined ? (props?.class as string) : ''
+          }`}
+        >
           <PopupSpot type="board creating" />
           <nav className="header__navigation">
             <div className="header__navigation-buttons">
-              <Link className={`header__btn elem-${isToken ? 'visible' : 'hidden'}`} to={STUB_URL}>
+              <Link className={`header__btn elem-${isToken ? 'visible' : 'hidden'}`} to={USERS_URL}>
                 <span className="header__navigation-title">
                   {siteContent[context.locale].btnEditProfile}
                 </span>

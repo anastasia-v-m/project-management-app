@@ -6,6 +6,7 @@ import {
   LOGIN_URL,
   PROJECTS_URL,
   COLUMNS_URL,
+  USERS_URL,
 } from './containers/utlsList';
 import WelcomePage from './containers/WelcomePage';
 import { Provider } from 'react-redux';
@@ -15,9 +16,9 @@ import LogInPage from './containers/LogInPage';
 import AppProvider from './components/AppProvider';
 import PrivateRoute from './components/PrivateRoute';
 import ProjectsPage from './containers/ProjectsPage';
-import './App.scss';
 import './reset.scss';
 import ColumnsPage from './containers/ColumnsPage';
+import UserPage from './containers/UserPage/UserPage';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route path={USERS_URL} element={<UserPage />} />
             </Routes>
           </BrowserRouter>
         </React.StrictMode>

@@ -1,16 +1,17 @@
+import { AxiosError, AxiosResponse } from 'axios';
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../components/AppContext';
 import instance from '../../components/beNavigator';
+import Indicator from '../../components/Indicator';
 import siteContent from '../../containers/content';
-import { COLUMNS_URL, STUB_URL, WELCOM_PAGE_URL } from '../../containers/utlsList';
+import { COLUMNS_URL, WELCOM_PAGE_URL } from '../../containers/utlsList';
 import { GlobalAction } from '../../store/reducers';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { getToken } from '../commonFunctions';
 import Confirmation from '../Confirmation';
+import PopupSpot from '../PopupSpot';
 import './projectList.scss';
-
-const HEADER_BOTTOM = 156;
 
 export interface IProjectCard {
   id: string;
@@ -22,9 +23,21 @@ export default function ProjectsList(): JSX.Element {
   const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
 
+  const [isLoaded, setIsLoaded] = useState(true);
+
   const fillBoardsArray = async () => {
-    const { data } = await getAllBoards();
-    setBoardsArray(data);
+    const data = await getAllBoards()
+      .then((response) => response.data)
+      .catch((err: AxiosError) => {
+        dispatch({ type: GlobalAction.setRespStatus, payload: err.response?.status });
+        dispatch({ type: GlobalAction.setPopup, payload: true });
+        setIsLoaded(true);
+      });
+
+    if (data) {
+      setBoardsArray(data);
+      setIsLoaded(true);
+    }
   };
 
   const [isToken, setIsToken] = useState(getToken() !== '');
@@ -38,8 +51,7 @@ export default function ProjectsList(): JSX.Element {
     return () => clearInterval(interval);
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getAllBoards = (): Promise<any> => instance.get('/boards', { headers });
+  const getAllBoards = (): Promise<AxiosResponse> => instance.get('/boards', { headers });
   const [boardsArray, setBoardsArray] = useState([]);
 
   useEffect(() => {
@@ -47,6 +59,14 @@ export default function ProjectsList(): JSX.Element {
   }, []);
 
   const dispatch = useAppDispatch();
+  const { isReload } = useAppSelector((state) => state.reducer);
+
+  useEffect(() => {
+    if (isReload) {
+      dispatch({ type: GlobalAction.setIsReload, payload: false });
+      fillBoardsArray();
+    }
+  }, [isReload]);
 
   useEffect(() => {
     if (!isToken) {
@@ -66,7 +86,11 @@ export default function ProjectsList(): JSX.Element {
     <AppContext.Consumer>
       {(context): JSX.Element => (
         <ul className="project-list">
+          <PopupSpot type="query error" />
           <Confirmation message={siteContent[context.locale].msgBoardDelete} boardId={boardId} />
+          <p className={`loading ${isLoaded ? '' : 'active-loading'}`}>
+            <Indicator prefix={isLoaded ? '' : 'active-spinning'} />
+          </p>
           {boardsArray.map(
             (item: IProjectCard, index: number): JSX.Element => (
               <li className="project-card" key={index}>

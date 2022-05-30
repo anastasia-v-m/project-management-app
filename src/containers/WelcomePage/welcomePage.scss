@@ -60,3 +60,28 @@ h3 {
 .elem-visible {
   display: flex;
 }
+
+.loading {
+  width: 75px;
+  height: 0;
+  margin: auto;
+}
+
+.active-loading {
+  height: 75px;
+}
+
+.spinning {
+  visibility: hidden;
+  stroke-width: 8;
+  stroke: $basic-bkg;
+  stroke-dasharray: 50.26548245743669 50.26548245743669;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.active-spinning {
+  position: relative;
+  visibility: visible;
+  z-index: 5;
+}

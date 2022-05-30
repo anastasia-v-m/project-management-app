@@ -8,10 +8,10 @@ export default function WelcomePageEn(): JSX.Element {
         <p>Hi!</p>
         <ul>
           We are members of Team 62.
-          <li>Nikita</li>
-          <li>Yuriy</li>
+          {/* <li>Nikita</li>
+          <li>Yuriy</li> */}
           <li>Anastasia</li>
-          <li>Konstantin (out mentor)</li>
+          <li>Konstantin (mentor)</li>
         </ul>
       </section>
       <section className="welcome__project">

@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   height: 100px;
-  width: 100vw;
+  width: calc(100vw);
   background-color: $basic-bkg;
   color: $basic-color;
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;

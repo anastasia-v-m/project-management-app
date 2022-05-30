@@ -1,4 +1,6 @@
+import { AxiosError, AxiosResponse } from 'axios';
 import React, { SyntheticEvent, useState } from 'react';
+import PopupSpot from '..';
 import { AppContext } from '../../../components/AppContext';
 import instance from '../../../components/beNavigator';
 import siteContent from '../../../containers/content';
@@ -14,7 +16,7 @@ export interface ICreateBoard {
 const refTitle: React.RefObject<HTMLInputElement> = React.createRef();
 const refDescr: React.RefObject<HTMLInputElement> = React.createRef();
 
-export default function NewBoard(props: { popupVisibility: boolean }): JSX.Element {
+export default function NewBoard(): JSX.Element {
   const [titleIsValid, setTitleIsValid] = useState(true);
 
   const { respStatus, isPopupNewBoard } = useAppSelector((state) => state.reducer);
@@ -28,8 +30,7 @@ export default function NewBoard(props: { popupVisibility: boolean }): JSX.Eleme
   const boardCreatingSubmitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const headers = { Authorization: `Bearer ${token}` };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const CreateBoard = (data: ICreateBoard): Promise<any> =>
+    const CreateBoard = (data: ICreateBoard): Promise<AxiosResponse> =>
       instance.post('/boards', data, { headers });
     setTitleIsValid((refTitle.current?.value as string).trim() !== '');
     if (titleIsValid) {
@@ -37,15 +38,17 @@ export default function NewBoard(props: { popupVisibility: boolean }): JSX.Eleme
         title: (refTitle.current?.value as string).trim(),
         description: (refDescr.current?.value as string).trim(),
       };
-      try {
-        const { status } = await CreateBoard(requestData).then((response) => response);
+      const status = await CreateBoard(requestData)
+        .then((response) => response.status)
+        .catch((err: AxiosError) => {
+          dispatch({ type: GlobalAction.setRespStatus, payload: err?.response?.status });
+          dispatch({ type: GlobalAction.setPopup, payload: true });
+        });
+      if (status) {
         if (status === 201) {
+          dispatch({ type: GlobalAction.setIsReload, payload: true });
           offPopup();
-          alert('ok');
         }
-      } catch (err) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        dispatch({ type: GlobalAction.setRespStatus, payload: err.response.status });
       }
     }
   };
@@ -61,6 +64,7 @@ export default function NewBoard(props: { popupVisibility: boolean }): JSX.Eleme
           className={isPopupNewBoard ? 'popup-wrapper active' : 'popup-wrapper'}
           onClick={offPopup}
         >
+          <PopupSpot type="query error" />
           <form onSubmit={boardCreatingSubmitHandler} onClick={ignorePopup}>
             <label className={`input-data__title`} htmlFor="boardtitle">
               {siteContent[context.locale].boardTitleInputTitle}
@@ -69,11 +73,11 @@ export default function NewBoard(props: { popupVisibility: boolean }): JSX.Eleme
                 {titleIsValid ? '' : siteContent[context.locale].incorrectBoardTitleMsg}
               </p>
             </label>
-            <label className="input-data__title" htmlFor="login">
+            <label className="input-data__title" htmlFor="descr">
               {siteContent[context.locale].boardDescrInputTitle}
               <input
                 type="text"
-                name="login"
+                name="descr"
                 maxLength={100}
                 className="input-data__box"
                 ref={refDescr}
@@ -82,7 +86,7 @@ export default function NewBoard(props: { popupVisibility: boolean }): JSX.Eleme
             <button className="btn input-data__btn" type="submit">
               OK
             </button>
-            <div>{getRespMessage(respStatus)}</div>
+            <div>{getRespMessage(respStatus)[context.locale]}</div>
           </form>
         </div>
       )}
